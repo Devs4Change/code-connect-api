@@ -1,8 +1,10 @@
+import { userModel } from "../models/users.js";
+    
 // Controller for user registration
 export const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
-    console.log(name, email, password);
-    res.json({ message: "User registered successfully" });
+    const user = await userModel.create({ name, email, password });
+    res.json({ user, message: "User registered successfully" });
 };  
 
 // Controller for user login
