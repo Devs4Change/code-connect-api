@@ -1,5 +1,5 @@
-import { userModel } from "../models/users.js";
-import { createUserValidator, loginUserValidator, updateUserValidator } from "../validators/user.js";
+import { UserModel } from "../models/users.js";
+import { createUserValidator, loginUserValidator, updateUserValidator } from "../validators/users.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
     
@@ -12,14 +12,14 @@ export const registerUser = async (req, res, next) => {
             return res.status(422).json(error);
         }
         // Check if the user already exists
-        const existingUser = await userModel.findOne({ email: value.email });
+        const existingUser = await UserModel.findOne({ email: value.email });
         if (existingUser) {
             return res.status(409).json("User already exists");
         }
         // Hash the password
         const hashedPassword = bcrypt.hashSync(value.password, 10);
         // Create a new user
-        await userModel.create({ ...value, password: hashedPassword });
+        await UserModel.create({ ...value, password: hashedPassword });
         // Send a success response
         res.status(201).json({ message: "User registered successfully" });
     } catch (error) {
@@ -36,7 +36,7 @@ export const loginUser = async (req, res, next) => {
             return res.status(422).json(error);
         }
         // Find the user by email
-        const user = await userModel.findOne({ email: value.email });
+        const user = await UserModel.findOne({ email: value.email });
         if (!user) {
             return res.status(404).json("User not found");
         }
@@ -46,7 +46,11 @@ export const loginUser = async (req, res, next) => {
             return res.status(401).json("Invalid Credentials");
         }
         // Generate a JWT token
-        const token = jwt.sign({ id: user.id },
+        const token = jwt.sign(
+            { 
+                id: user.id,
+                role: user.role
+            },
             process.env.JWT_SECRET_KEY,
             { expiresIn: "1h" }
         );
@@ -66,7 +70,7 @@ export const logoutUser = async (req, res) => {
 export const getUserProfile = async (req, res, next) => {
     try {
         // Find authenticated user
-        const user = await userModel
+        const user = await UserModel
         .findById(req.auth.id)
         .select({password: false});
 
