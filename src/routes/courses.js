@@ -6,8 +6,8 @@ import { isAuthenticated, isAdmin } from "../middlewares/auth.js";
 const coursesRouter = Router();
 
 coursesRouter.post("/courses/create", isAuthenticated, isAdmin, createCourse);
-coursesRouter.get("/courses", isAuthenticated, getCourses);
-coursesRouter.get("/courses/:id", isAuthenticated, getCourse);
+coursesRouter.get("/courses", getCourses);
+coursesRouter.get("/courses/:id", getCourse);
 coursesRouter.patch("/courses/:id", isAuthenticated, isAdmin, updateCourse);
 
 export default coursesRouter;
