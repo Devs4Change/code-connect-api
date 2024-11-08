@@ -17,3 +17,7 @@ export const updateUserValidator = Joi.object({
   avatar: Joi.string(),
 });
 
+export const logoutUserValidator = Joi.object({
+  refreshToken: Joi.string().required(),
+});
+

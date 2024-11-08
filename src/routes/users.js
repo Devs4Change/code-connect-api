@@ -7,9 +7,9 @@ const usersRouter = Router();
 
 usersRouter.post("/users/register", registerUser);
 usersRouter.post("/users/login", loginUser);
-usersRouter.post("/users/logout", logoutUser);
+usersRouter.post("/users/logout", isAuthenticated, logoutUser);
 usersRouter.get("/users/me", isAuthenticated, getUserProfile);
-usersRouter.patch("/users/profile", updateUserProfile);
+usersRouter.patch("/users/profile", isAuthenticated, updateUserProfile);
 
 
 export default usersRouter;

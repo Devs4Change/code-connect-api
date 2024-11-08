@@ -18,6 +18,7 @@ export const createCourse = async (req, res, next) => {
     }
 }
 
+// Controller for getting all courses
 export const getCourses = async (req, res, next) => {
     try {
         const courses = await CourseModel.find();
@@ -27,11 +28,22 @@ export const getCourses = async (req, res, next) => {
     }
 }
 
+// Controller for getting a single course
+export const getCourse = async (req, res, next) => {
+    try {
+        const course = await CourseModel.findById(req.params.id);
+        return res.status(200).json(course);
+    } catch (error) {
+        next(error);
+    }
+}
+
+// Controller for updating a course
 export const updateCourse = async (req, res, next) => {
     try {
         
     } catch (error) {
         next(error);
     }
-}
+    }
 

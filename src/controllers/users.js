@@ -1,8 +1,8 @@
 import { UserModel } from "../models/users.js";
-import { createUserValidator, loginUserValidator, updateUserValidator } from "../validators/users.js";
+import { createUserValidator, loginUserValidator, updateUserValidator, logoutUserValidator } from "../validators/users.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-    
+
 // Controller for user registration
 export const registerUser = async (req, res, next) => {
     try {
@@ -25,7 +25,7 @@ export const registerUser = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-};  
+};
 
 // Controller for user login
 export const loginUser = async (req, res, next) => {
@@ -47,7 +47,7 @@ export const loginUser = async (req, res, next) => {
         }
         // Generate a JWT token
         const token = jwt.sign(
-            { 
+            {
                 id: user.id,
                 role: user.role
             },
@@ -61,10 +61,6 @@ export const loginUser = async (req, res, next) => {
     }
 };
 
-// Controller for user logout
-export const logoutUser = async (req, res) => {
-    res.json({ message: "User logged out successfully" });
-};
 
 // Controller for getting user profile
 export const getUserProfile = async (req, res, next) => {
@@ -72,17 +68,38 @@ export const getUserProfile = async (req, res, next) => {
         // Find authenticated user
         const user = await UserModel
         .findById(req.auth.id)
-        .select({password: false});
-
+        .select({ password: false });
+        
         // Send a success response with the user profile
         res.json(user);
     } catch (error) {
         next(error);
     }
 };
-    
+
 
 // Controller for updating user profile
-export const updateUserProfile = async (req, res) => {
-    res.json({ message: "User profile updated successfully" });
+export const updateUserProfile = async (req, res, next) => {
+    try {
+        // Validate the request body against the updateUserValidator schema
+        const { error, value } = updateUserValidator.validate(req.body);
+        if (error) {
+            return res.status(422).json(error);
+        }
+        // Update the user profile
+        await UserModel.findByIdAndUpdate(req.auth.id, value);
+        // Send a success response
+        res.json({ message: "User profile updated successfully" });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Controller for user logout
+export const logoutUser = async (req, res, next) => {
+    try {   
+        res.json({ message: "User logged out successfully" });
+    } catch (error) {
+        next(error);
+    }
 };
