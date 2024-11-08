@@ -18,6 +18,15 @@ export const createCourse = async (req, res, next) => {
     }
 }
 
+export const getCourses = async (req, res, next) => {
+    try {
+        const courses = await CourseModel.find();
+        return res.status(200).json(courses);
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const updateCourse = async (req, res, next) => {
     try {
         
