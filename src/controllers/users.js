@@ -67,9 +67,9 @@ export const getUserProfile = async (req, res, next) => {
     try {
         // Find authenticated user
         const user = await UserModel
-        .findById(req.auth.id)
-        .select({ password: false });
-        
+            .findById(req.auth.id)
+            .select({ password: false });
+
         // Send a success response with the user profile
         res.json(user);
     } catch (error) {
@@ -82,7 +82,10 @@ export const getUserProfile = async (req, res, next) => {
 export const updateUserProfile = async (req, res, next) => {
     try {
         // Validate the request body against the updateUserValidator schema
-        const { error, value } = updateUserValidator.validate(req.body);
+        const { error, value } = updateUserValidator.validate({
+            ...req.body,
+            avatar: req.file?.filename
+        });
         if (error) {
             return res.status(422).json(error);
         }
@@ -97,7 +100,7 @@ export const updateUserProfile = async (req, res, next) => {
 
 // Controller for user logout
 export const logoutUser = async (req, res, next) => {
-    try {   
+    try {
         res.json({ message: "User logged out successfully" });
     } catch (error) {
         next(error);

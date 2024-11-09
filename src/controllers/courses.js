@@ -5,11 +5,14 @@ import { createCourseValidator } from "../validators/courses.js";
 export const createCourse = async (req, res, next) => {
     try {
         // Validate user input
-        const { error, value } = createCourseValidator.validate(req.body);
+        const { error, value } = createCourseValidator.validate({
+            ...req.body,
+            content: req.file?.filename
+        });
         if (error) {
             return res.status(422).json(error);
         }
-        
+
         // Create course
         await CourseModel.create(value);
         return res.status(201).json("Course created successfully");
@@ -41,9 +44,9 @@ export const getCourse = async (req, res, next) => {
 // Controller for updating a course
 export const updateCourse = async (req, res, next) => {
     try {
-        
+
     } catch (error) {
         next(error);
     }
-    }
+}
 
