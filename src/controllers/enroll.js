@@ -8,10 +8,16 @@ export const enrollCourse = async (req, res, next) => {
         if (!course) {
             return res.status(404).json("Course not found");
         }
-        const user = await UserModel.findById(req.auth.id);
-        if (!user) {
-            return res.status(404).json("User not found");
+
+        // Check if the user is already enrolled in the course
+        if (course.enrolledUsers.includes(req.auth.id)) {
+            return res.status(400).json("User is already enrolled in the course");
         }
+
+        // const user = await UserModel.findById(req.auth.id);
+        // if (!user) {
+        //     return res.status(404).json("User not found");
+        // }
 
         // Update the course's enrolledUsers array
         course.enrolledUsers.push(user);
