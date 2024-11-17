@@ -11,7 +11,7 @@ export const enrollCourse = async (req, res, next) => {
 
         // Check if the user is already enrolled in the course
         if (course.enrolledUsers.includes(req.auth.id)) {
-            return res.status(400).json("User is already enrolled in the course");
+            return res.status(200).json("User is already enrolled in the course");
         }
 
         const user = await UserModel.findById(req.auth.id);
